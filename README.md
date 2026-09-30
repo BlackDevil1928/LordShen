@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/banner.png" alt="AutoPentest AI" width="300">
+  <img src="assets/banner.png" alt="AutoPentest AI" width="200">
 </p>
 
 <h1 align="center">AutoPentest AI</h1>
