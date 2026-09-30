@@ -1,7 +1,6 @@
 <p align="center">
-  <img src="assets/banner.png" alt="AutoPentest AI" width="200">
+<img width="200" height="200" align="center" alt="ChatGPT_Image_Sep_18__2026__11_45_44_AM-removebg-preview" src="https://github.com/user-attachments/assets/8e310615-6e91-44be-9b25-5c3ff88ba297" />
 </p>
-
 <h1 align="center">AutoPentest AI</h1>
 
 <p align="center">
@@ -612,7 +611,7 @@ class MyToolWrapper:
 ---
 
 <p align="center">
-  <img src="assets/logo.png" alt="AutoPentest AI" width="80">
+  <img width="80" height="80" alt="ChatGPT_Image_Sep_18__2026__11_45_44_AM-removebg-preview" src="https://github.com/user-attachments/assets/331073e4-a113-4c83-a51a-9845df7efe78" />
   <br>
   <b>AutoPentest AI</b> — Hunt smarter, not harder.
   <br>
