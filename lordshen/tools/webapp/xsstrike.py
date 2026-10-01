@@ -1,0 +1,64 @@
+"""XSStrike wrapper — advanced XSS detection with context awareness."""
+
+import re
+
+from lordshen.tools import ToolFinding
+from lordshen.tools.runner import run_tool, check_binary
+
+
+class XSStrikeWrapper:
+    """Wrapper for XSStrike advanced XSS scanner."""
+
+    name: str = "xsstrike"
+    binary: str = "xsstrike"
+
+    async def run(self, target: str, **kwargs) -> list[ToolFinding]:
+        """Run XSStrike against a URL."""
+        cmd = f"python3 -m xsstrike -u \"{target}\" --crawl"
+        result = await run_tool(cmd, timeout=300, shell=True)
+        return self.parse_output(result.stdout, target=target)
+
+    def parse_output(self, raw: str, **kwargs) -> list[ToolFinding]:
+        """Parse XSStrike stdout output."""
+        findings: list[ToolFinding] = []
+        target = kwargs.get("target", "")
+
+        # XSStrike output patterns
+        # Look for confirmed XSS
+        vuln_blocks = re.findall(
+            r"Vulnerable.*?(?:Payload|Vector):?\s*(.+?)(?:\n|$)", raw, re.IGNORECASE
+        )
+
+        for payload in vuln_blocks:
+            payload = payload.strip()
+            if payload:
+                findings.append(ToolFinding(
+                    title=f"XSS confirmed: {payload[:60]}",
+                    severity="high",
+                    url=target,
+                    cvss_score=7.5,
+                    tool_name=self.name,
+                    evidence=f"Payload: {payload}",
+                    extra={"type": "xss", "payload": payload},
+                ))
+
+        # Look for reflection context
+        reflections = re.findall(
+            r"Reflection found.*?(?:context|position):?\s*(.+?)(?:\n|$)",
+            raw, re.IGNORECASE,
+        )
+        for context in reflections:
+            findings.append(ToolFinding(
+                title=f"XSS reflection: {context.strip()[:60]}",
+                severity="medium",
+                url=target,
+                tool_name=self.name,
+                evidence=f"Reflection context: {context.strip()}",
+                extra={"type": "xss_reflection", "context": context.strip()},
+            ))
+
+        return findings
+
+    @staticmethod
+    def is_installed() -> bool:
+        return check_binary("xsstrike")

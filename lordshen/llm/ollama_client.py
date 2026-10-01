@@ -1,0 +1,104 @@
+"""Ollama client for local/sensitive AI tasks — never sends data to cloud."""
+
+from typing import Any
+
+import httpx
+
+from lordshen.core.config import get_config_value
+from lordshen.core.console import print_warning
+
+
+OLLAMA_TASK_MODELS: dict[str, str] = {
+    "sensitive_payload": "deepseek-coder:6.7b",
+    "waf_bypass_local": "deepseek-coder:6.7b",
+    "general": "mistral:7b",
+}
+
+
+class OllamaClient:
+    """Local LLM client via Ollama API — for sensitive data that must not leave the machine."""
+
+    def __init__(self, host: str | None = None) -> None:
+        self.host = host or get_config_value("ollama-host") or "http://localhost:11434"
+
+    async def complete(
+        self,
+        system: str,
+        user: str,
+        task: str = "general",
+        json_mode: bool = False,
+        temperature: float | None = None,
+        max_tokens: int | None = None,
+    ) -> str:
+        """Make a completion call to local Ollama instance.
+
+        Args:
+            system: System prompt.
+            user: User message (NOT anonymized — stays local).
+            task: Task type for model routing.
+            json_mode: Request JSON output.
+            temperature: Override temperature.
+            max_tokens: Override max tokens.
+
+        Returns:
+            Completion text string.
+        """
+        model = OLLAMA_TASK_MODELS.get(task, OLLAMA_TASK_MODELS["general"])
+
+        payload: dict[str, Any] = {
+            "model": model,
+            "prompt": user,
+            "system": system,
+            "stream": False,
+        }
+
+        options: dict[str, Any] = {}
+        if temperature is not None:
+            options["temperature"] = temperature
+        if max_tokens is not None:
+            options["num_predict"] = max_tokens
+        if options:
+            payload["options"] = options
+
+        if json_mode:
+            payload["format"] = "json"
+
+        try:
+            async with httpx.AsyncClient(timeout=120.0) as client:
+                response = await client.post(
+                    f"{self.host}/api/generate",
+                    json=payload,
+                )
+                response.raise_for_status()
+                data = response.json()
+                return data.get("response", "")
+        except httpx.ConnectError:
+            print_warning("Ollama not running. Start with: ollama serve")
+            return ""
+        except httpx.TimeoutException:
+            print_warning("Ollama request timed out")
+            return ""
+        except Exception as e:
+            print_warning(f"Ollama error: {e}")
+            return ""
+
+    async def is_available(self) -> bool:
+        """Check if Ollama server is reachable."""
+        try:
+            async with httpx.AsyncClient(timeout=5.0) as client:
+                response = await client.get(f"{self.host}/api/tags")
+                return response.status_code == 200
+        except Exception:
+            return False
+
+    async def list_models(self) -> list[str]:
+        """List available Ollama models."""
+        try:
+            async with httpx.AsyncClient(timeout=10.0) as client:
+                response = await client.get(f"{self.host}/api/tags")
+                if response.status_code == 200:
+                    data = response.json()
+                    return [m["name"] for m in data.get("models", [])]
+        except Exception:
+            pass
+        return []

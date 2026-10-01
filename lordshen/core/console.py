@@ -1,0 +1,57 @@
+"""Console output management using Rich."""
+from rich.console import Console
+from rich.table import Table
+from rich.panel import Panel
+
+console = Console()
+
+def get_severity_style(severity: str) -> str:
+    """Get the rich style string for a given severity."""
+    mapping = {
+        "CRITICAL": "bold red",
+        "HIGH": "bold orange1",
+        "MEDIUM": "bold yellow",
+        "LOW": "bold green",
+        "INFO": "bold cyan"
+    }
+    return mapping.get(severity.upper(), "white")
+
+def print_banner(target: str, profile: str, scope_name: str, groq_status: str) -> None:
+    """Print the application banner."""
+    text = f"Target: {target}\nProfile: {profile}\nScope: {scope_name}\nGroq API: {groq_status}"
+    panel = Panel(text, title="[bold blue]LordShen AI[/bold blue]", expand=False)
+    console.print(panel)
+
+def print_stage_header(stage_name: str, stage_num: int, total_stages: int) -> None:
+    """Print the header for a pentest stage."""
+    console.print(f"\n[bold magenta]--- Stage {stage_num}/{total_stages}: {stage_name} ---[/bold magenta]")
+
+def print_finding(severity: str, title: str, host: str, cvss: float) -> None:
+    """Print a single finding."""
+    style = get_severity_style(severity)
+    console.print(f"[[{style}]{severity.upper()}[/{style}]] {title} ({host}) - CVSS: {cvss}")
+
+def print_error(msg: str) -> None:
+    """Print an error message."""
+    console.print(f"[bold red][ERROR][/bold red] {msg}")
+
+def print_warning(msg: str) -> None:
+    """Print a warning message."""
+    console.print(f"[bold yellow][WARNING][/bold yellow] {msg}")
+
+def print_success(msg: str) -> None:
+    """Print a success message."""
+    console.print(f"[bold green][SUCCESS][/bold green] {msg}")
+
+def print_info(msg: str) -> None:
+    """Print an info message."""
+    console.print(f"[bold cyan][INFO][/bold cyan] {msg}")
+
+def create_findings_table() -> Table:
+    """Create a preconfigured Rich Table for displaying findings."""
+    table = Table(title="Findings Summary")
+    table.add_column("Severity", justify="left")
+    table.add_column("Title", justify="left")
+    table.add_column("Host", justify="left")
+    table.add_column("CVSS", justify="right")
+    return table

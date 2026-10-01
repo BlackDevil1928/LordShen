@@ -1,7 +1,8 @@
 <p align="center">
-<img width="200" height="200" align="center" alt="ChatGPT_Image_Sep_18__2026__11_45_44_AM-removebg-preview" src="https://github.com/user-attachments/assets/8e310615-6e91-44be-9b25-5c3ff88ba297" />
+  <img src="assets/banner.png" alt="LordShen" width="300">
 </p>
-<h1 align="center">AutoPentest AI</h1>
+
+<h1 align="center">LordShen</h1>
 
 <p align="center">
   <b>Professional AI-Powered CLI Penetration Testing Framework</b><br>
@@ -27,13 +28,13 @@
 
 ## 🔥 Overview
 
-**AutoPentest AI** is a professional-grade, zero-cost, AI-powered penetration testing framework designed exclusively for the terminal. It integrates **35+ industry-standard security tools** into a unified CLI pipeline with **Groq AI analysis** and **Ollama local inference** — giving bug bounty hunters the power of automated reconnaissance, vulnerability scanning, and professional report generation in a single command.
+**LordShen** is a professional-grade, zero-cost, AI-powered penetration testing framework designed exclusively for the terminal. It integrates **35+ industry-standard security tools** into a unified CLI pipeline with **Groq AI analysis** (Qwen 3.8-27B) and **Ollama local inference** — giving bug bounty hunters the power of automated reconnaissance, vulnerability scanning, and professional report generation in a single command.
 
 > 🎯 **Built by hunters, for hunters.** Designed with HackerOne, Bugcrowd, and Intigriti workflows in mind.
 
 ### Key Highlights
 
-- 🤖 **AI-Powered Analysis** — Groq API (free tier) for vuln analysis, report generation, and autonomous agent decisions
+- 🤖 **AI-Powered Analysis** — Groq API (free tier, Qwen 3.8-27B) for vuln analysis, report generation, and autonomous agent decisions
 - 🔒 **Privacy First** — Sensitive data NEVER leaves your machine (Ollama for local tasks, anonymization for cloud)
 - 🎯 **Scope-Aware** — Mandatory scope validation prevents accidental out-of-scope testing
 - ⚡ **Parallel Execution** — Async pipeline runs multiple tools simultaneously
@@ -71,20 +72,20 @@ git clone https://github.com/yourusername/LordShen.git
 cd LordShen
 sudo bash install.sh
 
-# 2. Configure AI
-autopentest config --groq-key gsk_YOUR_FREE_KEY_HERE
+# 2. Configure AI (get free key at console.groq.com)
+lordshen config --groq-key gsk_YOUR_FREE_KEY_HERE
 
 # 3. Define your target scope
-autopentest scope create bugcrowd_target \
+lordshen scope create bugcrowd_target \
   -d "*.target.com" \
   -d "api.target.com" \
   --platform bugcrowd
 
 # 4. Launch a scan
-autopentest scan target.com --scope bugcrowd_target --profile standard
+lordshen scan target.com --scope bugcrowd_target --profile standard
 
 # 5. Export professional report
-autopentest export --scan-id <SCAN_ID> --format pdf -o report.pdf
+lordshen export --scan-id <SCAN_ID> --format pdf -o report.pdf
 ```
 
 ---
@@ -116,7 +117,7 @@ The installer automatically:
 - ✅ Installs Playwright + Chromium for JS analysis
 - ✅ Downloads Nuclei templates
 - ✅ Installs Ollama + pulls mistral:7b model
-- ✅ Creates `~/.autopentest` config directory
+- ✅ Creates `~/.lordshen` config directory
 
 ### Manual Installation
 
@@ -130,7 +131,7 @@ go install -v github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest
 go install -v github.com/projectdiscovery/httpx/cmd/httpx@latest
 
 # Check tool status
-autopentest tools --check
+lordshen tools --check
 ```
 
 ---
@@ -141,33 +142,33 @@ autopentest tools --check
 
 | Command | Description | Example |
 |---------|-------------|---------|
-| `scan` | Full pipeline scan | `autopentest scan target.com -s scope_name -p deep` |
-| `agent` | Autonomous AI agent mode | `autopentest agent target.com -s scope_name -t 30` |
-| `recon` | Passive recon only | `autopentest recon target.com -s scope_name` |
-| `vuln` | Vulnerability scanning | `autopentest vuln https://target.com -s scope_name` |
-| `webapp` | Web app testing | `autopentest webapp https://target.com -s scope_name` |
-| `network` | Network/port scanning | `autopentest network 10.0.0.1 -s scope_name` |
-| `dorking` | Google dorking | `autopentest dorking target.com -s scope_name -c credentials` |
+| `scan` | Full pipeline scan | `lordshen scan target.com -s scope_name -p deep` |
+| `agent` | Autonomous AI agent mode | `lordshen agent target.com -s scope_name -t 30` |
+| `recon` | Passive recon only | `lordshen recon target.com -s scope_name` |
+| `vuln` | Vulnerability scanning | `lordshen vuln https://target.com -s scope_name` |
+| `webapp` | Web app testing | `lordshen webapp https://target.com -s scope_name` |
+| `network` | Network/port scanning | `lordshen network 10.0.0.1 -s scope_name` |
+| `dorking` | Google dorking | `lordshen dorking target.com -s scope_name -c credentials` |
 
 ### Management Commands
 
 | Command | Description | Example |
 |---------|-------------|---------|
-| `scope create` | Create target scope | `autopentest scope create h1_pgm -d '*.target.com'` |
-| `scope list` | List saved scopes | `autopentest scope list` |
-| `scope parse` | AI-parse program page | `autopentest scope parse https://hackerone.com/company -n h1` |
-| `scope delete` | Remove a scope | `autopentest scope delete old_scope` |
-| `config` | Manage settings | `autopentest config --groq-key gsk_xxx` |
-| `history` | Browse scan history | `autopentest history --scan-id abc123 --findings` |
-| `tools` | Check/install tools | `autopentest tools --check` |
-| `status` | System dashboard | `autopentest status` |
+| `scope create` | Create target scope | `lordshen scope create h1_pgm -d '*.target.com'` |
+| `scope list` | List saved scopes | `lordshen scope list` |
+| `scope parse` | AI-parse program page | `lordshen scope parse https://hackerone.com/company -n h1` |
+| `scope delete` | Remove a scope | `lordshen scope delete old_scope` |
+| `config` | Manage settings | `lordshen config --groq-key gsk_xxx` |
+| `history` | Browse scan history | `lordshen history --scan-id abc123 --findings` |
+| `tools` | Check/install tools | `lordshen tools --check` |
+| `status` | System dashboard | `lordshen status` |
 
 ### Reporting Commands
 
 | Command | Description | Example |
 |---------|-------------|---------|
-| `export` | Export full scan report | `autopentest export --scan-id abc123 -f pdf -o report.pdf` |
-| `report` | AI-generate single finding report | `autopentest report --scan-id abc123 -i 0 -s scope_name` |
+| `export` | Export full scan report | `lordshen export --scan-id abc123 -f pdf -o report.pdf` |
+| `report` | AI-generate single finding report | `lordshen report --scan-id abc123 -i 0 -s scope_name` |
 
 ---
 
@@ -213,14 +214,14 @@ LordShen/
 ├── install.sh                # Kali Linux auto-installer
 ├── README.md                 # This file
 │
-└── autopentest/              # Main package
+└── lordshen/                 # Main package
     │
     ├── cli/                  # 🖥  Click CLI — 14 commands
     │   └── main.py           # Entry point & all command definitions
     │
     ├── core/                 # ⚙️  Core infrastructure
     │   ├── console.py        # Rich terminal UI (banners, tables, colors)
-    │   ├── config.py         # Configuration management (~/.autopentest/)
+    │   ├── config.py         # Configuration management (~/.lordshen/)
     │   ├── database.py       # SQLAlchemy + SQLite (scans, findings, audit)
     │   └── exceptions.py     # Custom exception hierarchy
     │
@@ -228,10 +229,10 @@ LordShen/
     │   ├── models.py         # Pydantic v2 ProgramScope model
     │   ├── validator.py      # Domain wildcard + CIDR IP matching
     │   ├── guard.py          # @require_scope_check decorator
-    │   └── store.py          # Save/load scopes to ~/.autopentest/scopes/
+    │   └── store.py          # Save/load scopes to ~/.lordshen/scopes/
     │
     ├── llm/                  # 🤖 AI integration
-    │   ├── groq_client.py    # Groq API (cache, retry, anonymize, track)
+    │   ├── groq_client.py    # Groq API (Qwen 3.8-27B, cache, retry, anonymize)
     │   ├── ollama_client.py  # Ollama local inference
     │   ├── router.py         # Smart routing: Groq vs Ollama
     │   └── prompts.py        # 12 expert prompt templates
@@ -258,7 +259,7 @@ LordShen/
     │   └── seed_data.json    # 30+ training examples
     │
     ├── report/               # 📄 Report generation
-    │   ├── groq_writer.py    # AI-powered report section writer
+    │   ├── groq_writer.py    # AI-powered report section writer (Qwen 3.8-27B)
     │   ├── pdf_builder.py    # ReportLab PDF generator
     │   ├── md_builder.py     # Markdown (H1/Bugcrowd format)
     │   └── sarif_builder.py  # SARIF 2.1.0 for GitHub integration
@@ -276,105 +277,90 @@ LordShen/
 
 ### Passive Recon (9 tools)
 
-| Tool | Purpose | Type |
-|------|---------|------|
-| **Subfinder** | Fast subdomain discovery | Go binary |
-| **Amass** | Deep passive enumeration (60+ sources) | Go binary |
-| **crt.sh** | Certificate transparency logs | HTTP API |
-| **GAU** | Fetch known URLs from AlienVault/Wayback/Common Crawl | Go binary |
-| **Waybackurls** | Wayback Machine URL extraction | Go binary |
-| **theHarvester** | Email, subdomain, and host gathering | Python |
-| **ParamSpider** | Parameter discovery from web archives | Python |
-| **Shodan CLI** | Internet-wide scan data | Python |
-| **HIBP** | Breach data lookup | HTTP API |
+| Tool | Purpose |
+|------|---------|
+| **Subfinder** | Fast subdomain discovery |
+| **Amass** | Deep passive enumeration (60+ sources) |
+| **crt.sh** | Certificate transparency logs |
+| **GAU** | Fetch known URLs from AlienVault/Wayback/Common Crawl |
+| **Waybackurls** | Wayback Machine URL extraction |
+| **theHarvester** | Email, subdomain, and host gathering |
+| **ParamSpider** | Parameter discovery from web archives |
+| **Shodan CLI** | Internet-wide scan data |
+| **HIBP** | Breach data lookup |
 
 ### Active Recon (6 tools)
 
-| Tool | Purpose | Type |
-|------|---------|------|
-| **httpx** | HTTP probing & technology detection | Go binary |
-| **Nmap** | Port scanning & service fingerprinting | System |
-| **Masscan** | Ultra-fast port scanning | System |
-| **dnsx** | DNS resolution & brute-force | Go binary |
-| **WhatWeb** | Web technology identification | System |
-| **wafw00f** | WAF detection & fingerprinting | Python |
+| Tool | Purpose |
+|------|---------|
+| **httpx** | HTTP probing & technology detection |
+| **Nmap** | Port scanning & service fingerprinting |
+| **Masscan** | Ultra-fast port scanning |
+| **dnsx** | DNS resolution & brute-force |
+| **WhatWeb** | Web technology identification |
+| **wafw00f** | WAF detection & fingerprinting |
 
 ### Vulnerability Scanners (5 tools)
 
-| Tool | Purpose | Type |
-|------|---------|------|
-| **Nuclei** | Template-based vuln scanning (9000+ templates) | Go binary |
-| **Nikto** | Web server misconfiguration scanner | System |
-| **testssl.sh** | TLS/SSL configuration auditing | Bash |
-| **Subjack** | Subdomain takeover detection | Go binary |
-| **ssh-audit** | SSH server configuration auditing | Python |
+| Tool | Purpose |
+|------|---------|
+| **Nuclei** | Template-based vuln scanning (9000+ templates) |
+| **Nikto** | Web server misconfiguration scanner |
+| **testssl.sh** | TLS/SSL configuration auditing |
+| **Subjack** | Subdomain takeover detection |
+| **ssh-audit** | SSH server configuration auditing |
 
 ### Web App Testing (11 tools)
 
-| Tool | Purpose | Type |
-|------|---------|------|
-| **FFuf** | Web fuzzing (dirs, params, vhosts) | Go binary |
-| **Feroxbuster** | Recursive content discovery | Rust binary |
-| **SQLMap** | Automated SQL injection testing | Python |
-| **Dalfox** | XSS vulnerability scanner | Go binary |
-| **XSStrike** | Advanced XSS detection | Python |
-| **Arjun** | Hidden HTTP parameter discovery | Python |
-| **Wapiti** | Black-box web app scanner | Python |
-| **jwt_tool** | JWT token analysis & exploitation | Python |
-| **GraphQL-Cop** | GraphQL endpoint security testing | Python |
-| **SSRFmap** | SSRF exploitation framework | Python |
-| **CORScanner** | CORS misconfiguration detection | Python |
+| Tool | Purpose |
+|------|---------|
+| **FFuf** | Web fuzzing (dirs, params, vhosts) |
+| **Feroxbuster** | Recursive content discovery |
+| **SQLMap** | Automated SQL injection testing |
+| **Dalfox** | XSS vulnerability scanner |
+| **XSStrike** | Advanced XSS detection |
+| **Arjun** | Hidden HTTP parameter discovery |
+| **Wapiti** | Black-box web app scanner |
+| **jwt_tool** | JWT token analysis & exploitation |
+| **GraphQL-Cop** | GraphQL endpoint security testing |
+| **SSRFmap** | SSRF exploitation framework |
+| **CORScanner** | CORS misconfiguration detection |
 
-### Network & OSINT (7 tools)
+### Network, OSINT & Cloud (10 tools)
 
-| Tool | Purpose | Type |
-|------|---------|------|
-| **NetExec** | Network service exploitation | Python |
-| **Hydra** | Brute-force authentication | System |
-| **smtp-user-enum** | SMTP user enumeration | System |
-| **Google Dorking** | 70+ dork patterns across 7 categories | Built-in |
-| **Trufflehog** | Secret scanning in repos | Go binary |
-| **JS Intel** | JavaScript secret/endpoint extraction | Playwright |
-| **Interactsh** | Out-of-band interaction detection | Go binary |
-
-### Cloud Security (3 tools)
-
-| Tool | Purpose | Type |
-|------|---------|------|
-| **S3 Check** | Public S3 bucket enumeration | boto3 |
-| **ScoutSuite** | Cloud security posture assessment | Python |
-| **Trivy** | Container & IaC vulnerability scanning | Go binary |
+| Tool | Purpose |
+|------|---------|
+| **NetExec** | Network service exploitation |
+| **Hydra** | Brute-force authentication |
+| **smtp-user-enum** | SMTP user enumeration |
+| **Google Dorking** | 70+ dork patterns across 7 categories |
+| **Trufflehog** | Secret scanning in repos |
+| **JS Intel** | JavaScript secret/endpoint extraction |
+| **Interactsh** | Out-of-band interaction detection |
+| **S3 Check** | Public S3 bucket enumeration |
+| **ScoutSuite** | Cloud security posture assessment |
+| **Trivy** | Container & IaC vulnerability scanning |
 
 ---
 
 ## 🤖 AI Integration
 
-AutoPentest AI uses a **dual-LLM architecture** for maximum capability with zero data leakage:
+LordShen uses a **dual-LLM architecture** for maximum capability with zero data leakage:
 
 | Provider | Use Case | Privacy | Model |
 |----------|----------|---------|-------|
-| **Groq** (cloud) | Report writing, vuln analysis, agent decisions, scope parsing | Data **anonymized** before sending — IPs/domains replaced | llama-3.1-70b-versatile |
-| **Ollama** (local) | Sensitive payloads, WAF bypass generation | Data **never** leaves your machine | mistral:7b / deepseek-coder:6.7b |
+| **Groq** (cloud) | Report writing, vuln analysis, agent decisions, scope parsing | Data **anonymized** before sending | Qwen 3.8-27B |
+| **Ollama** (local) | Sensitive payloads, WAF bypass generation | Data **never** leaves your machine | mistral:7b |
 
 ### AI Features
 
-- **🔍 Smart Recon Analysis** — AI prioritizes discovered targets by attack surface
-- **📝 Report Generation** — 6 AI-written sections: title, description, repro steps, impact, CVSS, remediation
-- **🧠 Autonomous Agent** — ReAct loop: Observe findings → Think (Groq) → Act (run tool) → Repeat
-- **🎯 Scope Parsing** — Paste a HackerOne/Bugcrowd URL, AI extracts the scope automatically
-- **⚔️ Attack Chain Detection** — AI identifies multi-step vulnerability chains
-- **🛡 WAF Bypass** — AI generates WAF-specific bypass payloads (locally via Ollama)
-- **📊 CVSS Calculation** — AI computes CVSS 3.1 vectors and scores
-
-### Token Management
-
-```bash
-# Check daily usage
-autopentest status
-
-# Groq free tier: 500,000 tokens/day
-# Responses are cached for 24h to minimize usage
-```
+- 🔍 **Smart Recon Analysis** — AI prioritizes discovered targets by attack surface
+- 📝 **Report Generation** — 6 AI-written sections: title, description, repro steps, impact, CVSS, remediation
+- 🧠 **Autonomous Agent** — ReAct loop: Observe findings → Think (Groq) → Act (run tool) → Repeat
+- 🎯 **Scope Parsing** — Paste a HackerOne/Bugcrowd URL, AI extracts the scope automatically
+- ⚔️ **Attack Chain Detection** — AI identifies multi-step vulnerability chains
+- 🛡 **WAF Bypass** — AI generates WAF-specific bypass payloads (locally via Ollama)
+- 📊 **CVSS Calculation** — AI computes CVSS 3.1 vectors and scores
 
 ---
 
@@ -384,7 +370,7 @@ Scope enforcement is **mandatory** — every tool checks scope before execution.
 
 ```bash
 # Create scope manually
-autopentest scope create hackerone_target \
+lordshen scope create hackerone_target \
   -d "*.target.com" \
   -d "api.target.com" \
   --oos "admin.target.com" \
@@ -392,24 +378,22 @@ autopentest scope create hackerone_target \
   --platform hackerone
 
 # AI-parse from program page
-autopentest scope parse https://hackerone.com/target -n h1_target
+lordshen scope parse https://hackerone.com/target -n h1_target
 
 # Import from JSON
-autopentest scope create my_scope --from-file scope.json
+lordshen scope create my_scope --from-file scope.json
 
-# List all scopes
-autopentest scope list
-
-# View scope details
-autopentest scope show hackerone_target
+# List / Show / Delete
+lordshen scope list
+lordshen scope show hackerone_target
+lordshen scope delete old_scope
 ```
 
 ### Scope Features
 
-- ✅ **Wildcard domains** — `*.example.com` matches `sub.example.com` and `deep.sub.example.com`
+- ✅ **Wildcard domains** — `*.example.com` matches any subdomain
 - ✅ **CIDR IP ranges** — `192.168.1.0/24` matches `192.168.1.50`
 - ✅ **Deny-list priority** — Out-of-scope rules checked FIRST
-- ✅ **Vuln class filtering** — Exclude vuln types (e.g., `self_xss`, `csv_injection`)
 - ✅ **Guard decorator** — `@require_scope_check` enforces scope on every tool
 - ✅ **Audit logging** — All scope violations logged to SQLite
 
@@ -417,28 +401,19 @@ autopentest scope show hackerone_target
 
 ## 📄 Report Generation
 
-### Export Formats
-
 | Format | Use Case | Command |
 |--------|----------|---------|
 | **PDF** | Professional client reports | `--format pdf` |
 | **Markdown** | HackerOne/Bugcrowd submissions | `--format md` |
-| **SARIF** | GitHub Advanced Security integration | `--format sarif` |
+| **SARIF** | GitHub Advanced Security | `--format sarif` |
 | **JSON** | Programmatic analysis | `--format json` |
 
-### AI-Powered Reports
-
 ```bash
-# Generate AI report for a specific finding
-autopentest report --scan-id abc123 --finding-index 0 --scope my_scope
+# Export full scan report
+lordshen export --scan-id abc123 --format pdf -o ~/Desktop/report.pdf
 
-# Generates 6 sections:
-# 1. Professional title
-# 2. Technical description (3 paragraphs)
-# 3. Exact reproduction steps
-# 4. Business impact statement
-# 5. CVSS 3.1 calculation with vector
-# 6. Remediation guide with code examples
+# AI-generate report for a finding
+lordshen report --scan-id abc123 --finding-index 0 --scope my_scope
 ```
 
 ---
@@ -448,8 +423,8 @@ autopentest report --scan-id abc123 --finding-index 0 --scope my_scope
 | Feature | How It Works |
 |---------|-------------|
 | **Scope Guard** | Every tool validates targets against scope before execution |
-| **Data Anonymization** | IPs & domains replaced with `x.x.x.x` / `target.com` before Groq API calls |
-| **Local AI** | Sensitive tasks (payloads, WAF bypass) use Ollama — data stays on your machine |
+| **Data Anonymization** | IPs & domains replaced before Groq API calls |
+| **Local AI** | Sensitive tasks use Ollama — data stays on your machine |
 | **Rate Limiting** | Respects program-defined rate limits |
 | **Audit Trail** | All actions logged to SQLite database |
 | **No Telemetry** | Zero data collection, no phone-home |
@@ -460,26 +435,25 @@ autopentest report --scan-id abc123 --finding-index 0 --scope my_scope
 
 ```bash
 # Set Groq API key (stored in system keyring)
-autopentest config --groq-key gsk_YOUR_KEY
+lordshen config --groq-key gsk_YOUR_KEY
 
 # Set Ollama host
-autopentest config --set ollama-host http://localhost:11434
+lordshen config --set ollama-host http://localhost:11434
 
 # Set default scan profile
-autopentest config --set default-profile standard
-
-# Set rate limiting
-autopentest config --set rate-limit-rps 10
+lordshen config --set default-profile standard
 
 # View all settings
-autopentest config --show
+lordshen config --show
+
+# Check system status
+lordshen status
 ```
 
 ### Config Location
 
-All data stored in `~/.autopentest/`:
 ```
-~/.autopentest/
+~/.lordshen/
 ├── config.json          # Settings
 ├── scopes/              # Saved scope files
 ├── data/app.db          # SQLite database
@@ -492,47 +466,24 @@ All data stored in `~/.autopentest/`:
 
 ## 💡 Examples
 
-### Full Deep Scan
-
 ```bash
-autopentest scan example.com --scope my_scope --profile deep
-```
+# Full deep scan
+lordshen scan example.com --scope my_scope --profile deep
 
-### AI Agent Mode (Autonomous)
+# AI agent mode (autonomous)
+lordshen agent example.com --scope my_scope --max-turns 30
 
-```bash
-autopentest agent example.com --scope my_scope --max-turns 30
-```
+# Quick subdomain recon
+lordshen recon example.com --scope my_scope
 
-### Quick Subdomain Recon
+# Google dorking for credentials
+lordshen dorking example.com --scope my_scope --category credentials
 
-```bash
-autopentest recon example.com --scope my_scope
-```
+# Export PDF report
+lordshen export --scan-id abc123 --format pdf -o ~/Desktop/report.pdf
 
-### Google Dorking for Credentials
-
-```bash
-autopentest dorking example.com --scope my_scope --category credentials
-```
-
-### Export PDF Report
-
-```bash
-autopentest export --scan-id abc123 --format pdf -o ~/Desktop/report.pdf
-```
-
-### View Scan History
-
-```bash
-# List all scans
-autopentest history
-
-# View findings for a scan
-autopentest history --scan-id abc123 --findings
-
-# Filter by severity
-autopentest history --scan-id abc123 --findings --severity critical
+# View scan history with severity filter
+lordshen history --scan-id abc123 --findings --severity critical
 ```
 
 ---
@@ -541,27 +492,19 @@ autopentest history --scan-id abc123 --findings --severity critical
 
 ### Python Dependencies
 
-```
-click>=8.1          # CLI framework
-rich>=13.0          # Terminal UI
-groq>=0.4           # Groq AI API
-httpx[http2]>=0.25  # HTTP client
-sqlalchemy>=2.0     # Database ORM
-pydantic>=2.0       # Data validation
-keyring>=24.0       # Secure key storage
-diskcache>=5.6      # Response caching
-scikit-learn>=1.3   # ML classifier
-reportlab>=4.0      # PDF generation
-boto3>=1.28         # AWS S3 scanning
-playwright>=1.40    # JS analysis
-```
-
-### System Tools
-
-All tools are automatically installed by `install.sh`. Check status:
-```bash
-autopentest tools --check
-```
+| Package | Purpose |
+|---------|---------|
+| `click>=8.1` | CLI framework |
+| `rich>=13.0` | Terminal UI |
+| `groq>=0.4` | Groq AI API |
+| `httpx[http2]>=0.25` | HTTP client |
+| `sqlalchemy>=2.0` | Database ORM |
+| `pydantic>=2.0` | Data validation |
+| `keyring>=24.0` | Secure key storage |
+| `diskcache>=5.6` | Response caching |
+| `scikit-learn>=1.3` | ML classifier |
+| `reportlab>=4.0` | PDF generation |
+| `boto3>=1.28` | AWS S3 scanning |
 
 ---
 
@@ -569,16 +512,16 @@ autopentest tools --check
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/new-tool`)
-3. Add your tool wrapper in `autopentest/tools/`
+3. Add your tool wrapper in `lordshen/tools/`
 4. Register it in `pipeline/orchestrator.py` TOOL_MAP
 5. Submit a Pull Request
 
 ### Adding a New Tool Wrapper
 
 ```python
-# autopentest/tools/category/my_tool.py
-from autopentest.tools import ToolFinding
-from autopentest.tools.runner import run_tool, check_binary
+# lordshen/tools/category/my_tool.py
+from lordshen.tools import ToolFinding
+from lordshen.tools.runner import run_tool, check_binary
 
 class MyToolWrapper:
     name = "my_tool"
@@ -589,7 +532,6 @@ class MyToolWrapper:
         return self.parse_output(result.stdout)
 
     def parse_output(self, raw: str, **kwargs) -> list[ToolFinding]:
-        # Parse tool output into ToolFinding objects
         return []
 
     @staticmethod
@@ -601,7 +543,7 @@ class MyToolWrapper:
 
 ## ⚠️ Disclaimer
 
-> **AutoPentest AI is intended for authorized security testing only.**
+> **LordShen is intended for authorized security testing only.**
 >
 > - Always obtain **written permission** before testing any target
 > - Respect **program scope** and **rules of engagement**
@@ -611,9 +553,9 @@ class MyToolWrapper:
 ---
 
 <p align="center">
-  <img width="80" height="80" alt="ChatGPT_Image_Sep_18__2026__11_45_44_AM-removebg-preview" src="https://github.com/user-attachments/assets/331073e4-a113-4c83-a51a-9845df7efe78" />
+  <img src="assets/logo.png" alt="LordShen" width="80">
   <br>
-  <b>AutoPentest AI</b> — Hunt smarter, not harder.
+  <b>LordShen</b> — Hunt smarter, not harder.
   <br>
   <sub>Built with ❤️ for the bug bounty community</sub>
 </p>

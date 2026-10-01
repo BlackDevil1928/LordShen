@@ -1,0 +1,91 @@
+"""Dalfox wrapper — fast XSS detection with WAF bypass."""
+
+import json
+
+from lordshen.tools import ToolFinding
+from lordshen.tools.runner import run_tool, check_binary, get_temp_output_path
+
+
+class DalfoxWrapper:
+    """Wrapper for hahwul/dalfox XSS scanner."""
+
+    name: str = "dalfox"
+    binary: str = "dalfox"
+
+    async def run(self, target: str, **kwargs) -> list[ToolFinding]:
+        """Run dalfox XSS scan against a URL."""
+        output_path = get_temp_output_path("dalfox", "json")
+
+        cmd = [
+            "dalfox", "url", target,
+            "--skip-bav",
+            "--format", "json",
+            "--output", str(output_path),
+            "--silence",
+        ]
+
+        result = await run_tool(cmd, timeout=600)
+
+        findings: list[ToolFinding] = []
+        if output_path.exists():
+            raw = output_path.read_text(errors="replace")
+            findings = self.parse_output(raw, target=target)
+            try:
+                output_path.unlink()
+            except OSError:
+                pass
+
+        return findings
+
+    def parse_output(self, raw: str, **kwargs) -> list[ToolFinding]:
+        """Parse dalfox JSON output."""
+        findings: list[ToolFinding] = []
+        target = kwargs.get("target", "")
+
+        for line in raw.strip().splitlines():
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                data = json.loads(line)
+                vuln_type = data.get("type", "")
+                poc_url = data.get("data", "")
+                param = data.get("param", "")
+                payload = data.get("payload", "")
+                evidence = data.get("evidence", "")
+                cwe = data.get("cwe", "")
+                severity_raw = data.get("severity", "").lower()
+
+                severity = "high"
+                if "dom" in vuln_type.lower():
+                    severity = "medium"
+                elif "reflected" in vuln_type.lower():
+                    severity = "high"
+                elif "stored" in vuln_type.lower():
+                    severity = "critical"
+
+                findings.append(ToolFinding(
+                    title=f"XSS ({vuln_type}) in {param or 'parameter'}",
+                    severity=severity,
+                    url=poc_url or target,
+                    cvss_score=6.1 if severity == "medium" else 7.5,
+                    tool_name=self.name,
+                    evidence=f"Payload: {payload}\nEvidence: {evidence}",
+                    description=f"Cross-site scripting ({vuln_type}) found via parameter '{param}'",
+                    extra={
+                        "type": "xss",
+                        "xss_type": vuln_type,
+                        "parameter": param,
+                        "payload": payload,
+                        "cwe": cwe,
+                        "poc_url": poc_url,
+                    },
+                ))
+            except json.JSONDecodeError:
+                continue
+
+        return findings
+
+    @staticmethod
+    def is_installed() -> bool:
+        return check_binary("dalfox")

@@ -1,0 +1,75 @@
+"""Netexec (nxc) wrapper — SMB/SSH/WinRM/LDAP service testing."""
+
+import re
+
+from lordshen.tools import ToolFinding
+from lordshen.tools.runner import run_tool, check_binary
+
+
+class NetexecWrapper:
+    """Wrapper for netexec (nxc) network service tester."""
+
+    name: str = "netexec"
+    binary: str = "nxc"
+
+    async def run(self, target: str, **kwargs) -> list[ToolFinding]:
+        """Run netexec service checks."""
+        protocol = kwargs.get("protocol", "smb")
+        findings: list[ToolFinding] = []
+
+        # Null session check
+        cmd = f"nxc {protocol} {target} -u '' -p '' --shares"
+        result = await run_tool(cmd, timeout=120, shell=True)
+        findings.extend(self.parse_output(result.stdout, target=target, check="null_session"))
+
+        return findings
+
+    def parse_output(self, raw: str, **kwargs) -> list[ToolFinding]:
+        """Parse netexec stdout."""
+        findings: list[ToolFinding] = []
+        target = kwargs.get("target", "")
+        check = kwargs.get("check", "")
+
+        for line in raw.strip().splitlines():
+            line = line.strip()
+            if not line:
+                continue
+
+            # Detect accessible shares
+            if "READ" in line or "WRITE" in line:
+                share_match = re.search(r"(\S+)\s+(READ|WRITE)", line)
+                if share_match:
+                    share_name = share_match.group(1)
+                    access = share_match.group(2)
+                    severity = "critical" if access == "WRITE" else "high"
+
+                    findings.append(ToolFinding(
+                        title=f"SMB share '{share_name}' has {access} access",
+                        severity=severity,
+                        host=target,
+                        tool_name=self.name,
+                        evidence=line,
+                        extra={
+                            "type": "smb_share",
+                            "share": share_name,
+                            "access": access,
+                            "auth": "null_session" if check == "null_session" else "authenticated",
+                        },
+                    ))
+
+            # Detect successful authentication
+            if "[+]" in line and ("Pwn3d!" in line or "ADMIN" in line):
+                findings.append(ToolFinding(
+                    title=f"Admin access on {target}",
+                    severity="critical",
+                    host=target,
+                    tool_name=self.name,
+                    evidence=line,
+                    extra={"type": "admin_access"},
+                ))
+
+        return findings
+
+    @staticmethod
+    def is_installed() -> bool:
+        return check_binary("nxc") or check_binary("netexec")

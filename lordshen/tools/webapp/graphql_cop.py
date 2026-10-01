@@ -1,0 +1,54 @@
+"""GraphQL-cop wrapper — GraphQL security testing."""
+
+import re
+
+from lordshen.tools import ToolFinding
+from lordshen.tools.runner import run_tool, check_binary
+
+
+class GraphqlCopWrapper:
+    """Wrapper for graphql-cop GraphQL security checker."""
+
+    name: str = "graphql_cop"
+    binary: str = "graphql-cop"
+
+    async def run(self, target: str, **kwargs) -> list[ToolFinding]:
+        """Run graphql-cop against a GraphQL endpoint."""
+        endpoint = kwargs.get("endpoint", f"{target.rstrip('/')}/graphql")
+        cmd = f"python3 -m graphql_cop -t {endpoint}"
+        result = await run_tool(cmd, timeout=120, shell=True)
+        return self.parse_output(result.stdout, target=endpoint)
+
+    def parse_output(self, raw: str, **kwargs) -> list[ToolFinding]:
+        """Parse graphql-cop stdout."""
+        findings: list[ToolFinding] = []
+        target = kwargs.get("target", "")
+
+        checks = {
+            "introspection": ("medium", "GraphQL introspection enabled"),
+            "field suggestion": ("low", "GraphQL field suggestions enabled"),
+            "batch": ("medium", "GraphQL batching queries allowed (DoS risk)"),
+            "alias overloading": ("medium", "GraphQL alias overloading possible"),
+            "circular": ("high", "GraphQL circular query depth not limited"),
+            "mutation": ("info", "GraphQL mutations available"),
+        }
+
+        for keyword, (severity, description) in checks.items():
+            if keyword.lower() in raw.lower():
+                # Check if it was detected/found vs not found
+                pattern = rf".*{re.escape(keyword)}.*?(found|enabled|detected|yes|vulnerable)"
+                if re.search(pattern, raw, re.IGNORECASE):
+                    findings.append(ToolFinding(
+                        title=f"GraphQL: {description}",
+                        severity=severity,
+                        url=target,
+                        tool_name=self.name,
+                        evidence=description,
+                        extra={"type": "graphql_finding", "check": keyword},
+                    ))
+
+        return findings
+
+    @staticmethod
+    def is_installed() -> bool:
+        return check_binary("graphql-cop")

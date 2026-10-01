@@ -1,0 +1,59 @@
+"""Scope guard — decorator and utilities to enforce scope checking."""
+
+import functools
+from typing import Any, Callable
+
+from lordshen.scope.models import ProgramScope
+from lordshen.scope.validator import is_in_scope
+from lordshen.core.console import console
+from lordshen.core.exceptions import ScopeError
+
+
+def check_scope_or_abort(target: str, scope: ProgramScope) -> None:
+    """Check if target is in scope; raise ScopeError if not.
+
+    Args:
+        target: Target URL, domain, or IP.
+        scope: Program scope to validate against.
+
+    Raises:
+        ScopeError: If target is out of scope.
+    """
+    in_scope, reason = is_in_scope(target, scope)
+    if not in_scope:
+        console.print(f"[bold red]⛔ SCOPE VIOLATION:[/bold red] {reason}")
+        raise ScopeError(reason)
+
+
+def require_scope_check(func: Callable) -> Callable:
+    """Decorator that validates scope before executing a tool function.
+
+    The decorated function must accept 'target' and 'scope' keyword arguments.
+    If the target is out of scope, the function is NOT executed and an empty
+    list is returned (for tool wrapper functions) or ScopeError is raised.
+    """
+
+    @functools.wraps(func)
+    async def wrapper(*args: Any, **kwargs: Any) -> Any:
+        target = kwargs.get("target", "")
+        scope = kwargs.get("scope")
+
+        # If target is in positional args, get first string arg
+        if not target and args:
+            for arg in args:
+                if isinstance(arg, str) and ("." in arg or ":" in arg):
+                    target = arg
+                    break
+
+        if scope and isinstance(scope, ProgramScope) and target:
+            in_scope, reason = is_in_scope(target, scope)
+            if not in_scope:
+                console.print(
+                    f"[bold red]⛔ SCOPE GUARD:[/bold red] Skipping {func.__name__} — {reason}"
+                )
+                # Return empty list for tool wrappers
+                return []
+
+        return await func(*args, **kwargs)
+
+    return wrapper

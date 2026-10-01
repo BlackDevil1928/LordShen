@@ -3,9 +3,9 @@ requires = ["setuptools>=68.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "autopentest"
+name = "lordshen"
 version = "1.0.0"
-description = "AI-powered CLI penetration testing tool"
+description = "LordShen — AI-powered CLI penetration testing framework"
 requires-python = ">=3.10"
 dependencies = [
     "click>=8.1",
@@ -28,7 +28,7 @@ dependencies = [
 ]
 
 [project.scripts]
-autopentest = "autopentest.cli.main:cli"
+lordshen = "lordshen.cli.main:cli"
 
 [tool.setuptools.packages.find]
 where = ["."]
