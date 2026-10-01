@@ -1,5 +1,6 @@
 <p align="center">
-  <img src="assets/banner.png" alt="LordShen" width="300">
+  <img width="200" height="200" alt="LordShen_logo" src="https://github.com/user-attachments/assets/51e2e575-73ac-4ba2-83ca-1d418b9e17a2" />
+
 </p>
 
 <h1 align="center">LordShen</h1>
@@ -553,7 +554,7 @@ class MyToolWrapper:
 ---
 
 <p align="center">
-  <img src="assets/logo.png" alt="LordShen" width="80">
+ <img width="80" height="80" alt="LordShen_logo" src="https://github.com/user-attachments/assets/51e2e575-73ac-4ba2-83ca-1d418b9e17a2" />
   <br>
   <b>LordShen</b> — Hunt smarter, not harder.
   <br>
